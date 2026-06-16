@@ -1,5 +1,5 @@
 package com.example.ungdungthoitiet.data.local
-
+//Để lưu giữ bền vững các tùy chọn cài đặt cấu hình nhỏ dưới dạng cặp khóa - giá trị (Key - Value) trên bộ nhớ máy
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -21,6 +21,7 @@ private val KEY_DON_VI_KHOANG_CACH = stringPreferencesKey("don_vi_khoang_cach")
 class QuanLyCaiDat(private val context: Context) {
 
     // Đọc dữ liệu đơn vị Nhiệt độ
+    //Sử dụng toán tử chuyển đổi dữ liệu .map để đọc giá trị lưu trữ trong DataStore dưới dạng luồng dữ liệu bất đồng bộ. Nếu giá trị chưa từng được lưu trữ trước đó (null), toán tử Elvis (?:) sẽ tự động gán giá trị mặc định cho hệ thống (ví dụ: "°C", "km/h", "mm", "km")
     val donViNhietDo: Flow<String> = context.dataStore.data.map { preferences ->
         preferences[KEY_DON_VI_NHIET_DO] ?: "°C"
     }
@@ -41,6 +42,8 @@ class QuanLyCaiDat(private val context: Context) {
     }
 
     // Các hàm lưu dữ liệu xuống DataStore
+    //Phương thức ghi dữ liệu ghi đè: suspend fun
+    //context.dataStore.edit để ghi đè chuỗi đơn vị mới do người dùng lựa chọn xuống ổ cứng lưu trữ.
     suspend fun luuDonViNhietDo(donVi: String) {
         context.dataStore.edit { preferences -> preferences[KEY_DON_VI_NHIET_DO] = donVi }
     }

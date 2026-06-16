@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ungdungthoitiet.data.TrangThaiUiThoiTiet
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.ungdungthoitiet.ui.theme.UngDungThoiTietTheme
 
 @Composable
 fun BangCaiDat(
@@ -81,5 +83,51 @@ fun OptionRadio(text: String, selected: Boolean, onClick: () -> Unit) {
     ) {
         RadioButton(selected = selected, onClick = null)
         Text(text)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun XemTruocThanhChonDonVi() {
+    UngDungThoiTietTheme {
+        ThanhChonDonVi(
+            tieuDe = "Nhiệt độ",
+            chon1 = "°C",
+            chon2 = "°F",
+            giaTriHienTai = "°C",
+            onThayDoi = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun XemTruocOptionRadio() {
+    UngDungThoiTietTheme {
+        Row(modifier = Modifier.padding(16.dp)) {
+            OptionRadio(text = "Đang chọn", selected = true, onClick = {})
+            Spacer(Modifier.width(16.dp))
+            OptionRadio(text = "Chưa chọn", selected = false, onClick = {})
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun XemTruocBangCaiDat() {
+    UngDungThoiTietTheme {
+        BangCaiDat(
+            trangThai = TrangThaiUiThoiTiet(
+                donViNhietDo = "°C",
+                donViGio = "km/h",
+                donViLuongMua = "mm",
+                donViKhoangCach = "km"
+            ),
+            onDoiNhietDo = {},
+            onDoiGio = {},
+            onDoiLuongMua = {},
+            onDoiKhoangCach = {},
+            onDong = {}
+        )
     }
 }

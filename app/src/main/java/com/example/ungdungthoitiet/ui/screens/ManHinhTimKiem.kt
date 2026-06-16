@@ -18,6 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.ungdungthoitiet.ui.theme.UngDungThoiTietTheme
 import com.example.ungdungthoitiet.R
 import com.example.ungdungthoitiet.data.DuLieuThoiTiet
 import com.example.ungdungthoitiet.data.TrangThaiUiThoiTiet
@@ -101,6 +103,26 @@ fun ManHinhTimKiem(
                 }
             }
 
+
+            if (trangThai.danhSachGoiYTimKiem.isEmpty() &&
+                trangThai.chuoiTimKiemHienTai.isNotEmpty() &&
+                !trangThai.dangTaiDuLieu &&
+                trangThai.thanhPhoXemTruoc == null
+            ) {
+                Spacer(modifier = Modifier.height(32.dp))
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "❌ Không tìm thấy thành phố nào phù hợp!",
+                        color = Color(0xFFFF5252), // Màu đỏ nổi bật trên nền tối mờ
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
             if (trangThai.thanhPhoXemTruoc != null && !trangThai.dangTaiDuLieu) {
                 val ketQua = trangThai.thanhPhoXemTruoc
                 Spacer(modifier = Modifier.height(16.dp))
@@ -143,5 +165,29 @@ fun ManHinhTimKiem(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun XemTruocManHinhTimKiem() {
+    val mau = DuLieuThoiTiet(
+        "Hà Nội", 30, "Mây rải rác", 70, 20.0, 1012, 33, 26,
+        listOf("Bây giờ - 30°C"),
+        listOf("23/5 - 30°C"), "01d"
+    )
+    val trangThai = TrangThaiUiThoiTiet(
+        chuoiTimKiemHienTai = "Hà Nội",
+        danhSachGoiYTimKiem = listOf("Hà Nội", "Hà Nam", "Hà Tĩnh"),
+        thanhPhoXemTruoc = mau
+    )
+    UngDungThoiTietTheme {
+        ManHinhTimKiem(
+            trangThai = trangThai,
+            onGocChuThayDoi = {},
+            onChonGoiY = {},
+            onXacNhanThem = {},
+            onBamNutHuyBo = {}
+        )
     }
 }

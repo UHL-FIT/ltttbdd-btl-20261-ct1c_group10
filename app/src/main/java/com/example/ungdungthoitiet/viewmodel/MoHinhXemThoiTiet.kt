@@ -1,5 +1,6 @@
 package com.example.ungdungthoitiet.viewmodel
-
+//Kế thừa AndroidViewModel, quản lý toàn bộ trạng thái của ứng dụng.
+//ViewModel đóng vai trò trung gian đứng ra kết nối các lớp lưu trữ cục bộ (Room, DataStore), kho dữ liệu mạng (Repository) và đóng gói dữ liệu vào luồng trạng thái Reactive công khai truyền ra ngoài giao diện.
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,11 +26,13 @@ class MoHinhXemThoiTiet(application: Application) : AndroidViewModel(application
     private val database = AppDatabase.layDatabase(application)
     private val thanhPhoDao = database.thanhPhoDao()
 
+    //_trangThaiUi: Đối tượng dòng dữ liệu thay đổi MutableStateFlow được đặt thuộc tính bảo mật private để đảm bảo không một lớp giao diện bên ngoài nào có quyền tự ý chỉnh sửa giá trị bên trong.
     private val _trangThaiUi = MutableStateFlow(TrangThaiUiThoiTiet())
+    //uiState: Biến dòng dữ liệu công khai được ép kiểu bảo mật chỉ đọc StateFlow thông qua hàm .asStateFlow(). Các màn hình Compose sẽ lắng nghe biến này.
     val uiState: StateFlow<TrangThaiUiThoiTiet> = _trangThaiUi.asStateFlow()
-
+    //congViecTimKiem: Job?: Đối tượng đại diện cho tiến trình Coroutine quản lý việc gõ chữ tìm kiếm từ khóa.
     private var congViecTimKiem: Job? = null
-
+    //Tự động kích hoạt chạy hàm khoiTaoCaiDatVaDuLieu() ngay khi ứng dụng vừa sinh ra ViewModel
     init {
         khoiTaoCaiDatVaDuLieu()
     }
@@ -38,13 +41,15 @@ class MoHinhXemThoiTiet(application: Application) : AndroidViewModel(application
      * Khởi tạo cài đặt và danh sách thành phố yêu thích từ Room Database.
      */
     private fun khoiTaoCaiDatVaDuLieu() {
+        //Mở một Coroutine gắn liền với vòng đời của ViewModel (viewModelScope.launch)
         viewModelScope.launch {
+            //Sử dụng toán tử lấy giá trị nhanh .first() của Flow để đọc ra 4 thông số đơn vị đo đang được lưu vĩnh viễn dưới ổ cứng ở DataStore
             // Đọc toàn bộ 4 thông số từ DataStore khi mở ứng dụng
             val donViNhietDoDaLuu = quanLyCaiDat.donViNhietDo.first()
             val donViGioDaLuu = quanLyCaiDat.donViGio.first()
             val donViLuongMuaDaLuu = quanLyCaiDat.donViLuongMua.first()
             val donViKhoangCachDaLuu = quanLyCaiDat.donViKhoangCach.first()
-
+            //Đồng bộ nạp ngay vào thuộc tính của _trangThaiUi
             _trangThaiUi.update {
                 it.copy(
                     donViNhietDo = donViNhietDoDaLuu,
@@ -53,11 +58,18 @@ class MoHinhXemThoiTiet(application: Application) : AndroidViewModel(application
                     donViKhoangCach = donViKhoangCachDaLuu
                 )
             }
-
+            //Ra lệnh cho Room DB chạy hàm thanhPhoDao.layTatCa()
             val danhSachLuuTrongRoom = thanhPhoDao.layTatCa()
+
+            //Nếu danh sách trống: ViewModel sẽ kích hoạt hàm taiDuLieuThoiTietMacDinh() tiến hành ghi đè 3 thành phố mẫu khởi điểm
+            //là Hà Nội, Hải Phòng, Đà Nẵng vào SQLite và nạp dữ liệu mạng cho chúng.
             if (danhSachLuuTrongRoom.isEmpty()) {
                 taiDuLieuThoiTietMacDinh()
-            } else {
+            }
+            //Nếu đã có sẵn dữ liệu cũ trong Room: Thực hiện lặp chuyển đổi mảng thực thể ThanhPhoEntity sang đối tượng UI DuLieuThoiTiet
+            //và gán lập tức vào trạng thái hiển thị ngoài trang chủ (danhSachThanhPho = danhSachBanDau) để xem được dữ liệu offline
+            else
+            {
                 // HIỂN THỊ DỮ LIỆU CŨ TỪ ROOM TRƯỚC (CHẾ ĐỘ NGOẠI TUYẾN TỨC THÌ)
                 val danhSachBanDau = danhSachLuuTrongRoom.map { entity ->
                     DuLieuThoiTiet(

@@ -1,5 +1,5 @@
 package com.example.ungdungthoitiet.data.remote
-
+//Khai báo các Data Class khớp chính xác với cây cấu trúc dữ liệu JSON trả về từ API, phục vụ cho bộ chuyển đổi Gson Converter tự động phân rã chuỗi.
 import com.google.gson.annotations.SerializedName
 
 data class WeatherResponse(
@@ -12,6 +12,7 @@ data class WeatherResponse(
 
 data class Main(
     val temp: Double,
+    //Sử dụng annotation @SerializedName("temp_min") và @SerializedName("temp_max") trong lớp Main để ánh xạ chính xác khóa viết kiểu gạch nối của JSON (temp_min) sang biến viết kiểu Lạc đà (tempMin) trong Kotlin.
     @SerializedName("temp_min") val tempMin: Double,
     @SerializedName("temp_max") val tempMax: Double,
     val humidity: Int,

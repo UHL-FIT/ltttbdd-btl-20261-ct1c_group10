@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
                 val uiState by moHinhXemUi.uiState.collectAsState()
 
                 NavHost(navController = navController, startDestination = "man_hinh_chinh") {
-                    
+
                     composable("man_hinh_chinh") {
                         ManHinhTrangChu(
                             trangThai = uiState,
@@ -90,6 +90,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    //CÁC HÀM OVERRIDE THEO DÕI VÒNG ĐỜI (ACTIVITY LIFECYCLE)
+    //Dùng tag:LifecycleLog trong Logcat để xem vòng đời
     override fun onStart() {
         super.onStart()
         Log.d("LifecycleLog", "onStart được gọi")
@@ -108,5 +110,15 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
         Log.d("LifecycleLog", "onStop được gọi")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Log.d("LifecycleLog", "onRestart được gọi")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("LifecycleLog", "onDestroy được gọi")
     }
 }

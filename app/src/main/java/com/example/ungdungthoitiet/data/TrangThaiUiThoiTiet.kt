@@ -1,6 +1,7 @@
 package com.example.ungdungthoitiet.data
+//Nơi quy định cấu trúc dữ liệu thuần để hiển thị giao diện. File này không chứa logic xử lý, chỉ định nghĩa các biểu mẫu dữ liệu (Data Class)
 
-// Lớp dữ liệu đại diện cho thông tin thời tiết của một thành phố theo tài liệu bài 3A-1
+//Là mô hình dữ liệu thời tiết đã được tinh gọn và thuần Việt hóa sau khi xử lý tinh chỉnh từ API thô.
 data class DuLieuThoiTiet(
     val tenThanhPho: String,      // Tên thành phố (Kiểu chuỗi)
     val nhietDo: Int,             // Nhiệt độ (Kiểu số nguyên)
@@ -15,7 +16,7 @@ data class DuLieuThoiTiet(
     val iconId: String = "01d"     // Mã hiệu ảnh thời tiết phục vụ tải ảnh động bằng thư viện Coil
 )
 
-// Lớp lưu trữ trạng thái giao diện người dùng theo kiến trúc dữ liệu chảy một chiều (UDF) của bài 4A-1
+// Lớp lưu trữ trạng thái giao diện người dùng theo kiến trúc dữ liệu chảy một chiều (UDF). Đại diện cho toàn bộ trạng thái của tất cả màn hình tại một thời điểm.
 data class TrangThaiUiThoiTiet(
     val danhSachThanhPho: List<DuLieuThoiTiet> = emptyList(), // Danh sách hiển thị ở Trang chủ
     val thanhPhoDuocChon: DuLieuThoiTiet? = null,             // Xem chi tiết (nullable)

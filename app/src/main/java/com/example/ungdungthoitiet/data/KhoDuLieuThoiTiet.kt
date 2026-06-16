@@ -1,5 +1,5 @@
 package com.example.ungdungthoitiet.data
-
+//Lớp này nhận dữ liệu mạng thô từ OpenWeatherApi, thực hiện tính toán, bóc tách cấu hình, định dạng chuỗi, nhân chia đơn vị đo để xuất ra đối tượng DuLieuThoiTiet hoàn thiện sạch sẽ.
 import com.example.ungdungthoitiet.data.remote.OpenWeatherApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 class KhoDuLieuThoiTiet {
-
+    //Chứa mã bảo mật API cá nhân maApi và cấu hình bộ máy xây dựng URL gốc Retrofit liên kết với nhà máy sản xuất đối tượng JSON GsonConverterFactory.
     private val maApi = "d63a62c66acd69ab3c89a169c0367cf6"
 
     private val retrofit = Retrofit.Builder()
@@ -21,6 +21,8 @@ class KhoDuLieuThoiTiet {
     /**
      * Lấy dữ liệu thời tiết thực tế từ OpenWeather API sử dụng Retrofit.
      */
+    //withContext(Dispatchers.IO) để ép toàn bộ khối lệnh xử lý phải chạy dưới luồng phụ (Background Thread) chuyên phục vụ
+    //các tác vụ đọc ghi mạng và ổ cứng, không làm nghẽn luồng hiển thị chính UI.
     suspend fun layThoiTiet(tenThanhPho: String): DuLieuThoiTiet = withContext(Dispatchers.IO) {
         try {
             // 1. Lấy thời tiết hiện tại
